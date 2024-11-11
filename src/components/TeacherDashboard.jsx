@@ -7,7 +7,7 @@ function TeacherDashboard() {
   const [newText, setNewText] = createSignal('');
   const [loading, setLoading] = createSignal(false);
   const [showCamera, setShowCamera] = createSignal(false);
-  const videoRef = {};
+  let videoRef;
   const navigate = useNavigate();
 
   const fetchTexts = async () => {
@@ -36,8 +36,8 @@ function TeacherDashboard() {
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef && videoRef.current) {
-        videoRef.current.srcObject = stream;
+      if (videoRef) {
+        videoRef.srcObject = stream;
       }
     } catch (error) {
       console.error('Error accessing camera:', error);
@@ -45,19 +45,19 @@ function TeacherDashboard() {
   };
 
   const stopCamera = () => {
-    if (videoRef && videoRef.current && videoRef.current.srcObject) {
-      let tracks = videoRef.current.srcObject.getTracks();
+    if (videoRef && videoRef.srcObject) {
+      let tracks = videoRef.srcObject.getTracks();
       tracks.forEach(track => track.stop());
     }
   };
 
   const captureImage = () => {
-    if (videoRef && videoRef.current) {
+    if (videoRef) {
       const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+      canvas.width = videoRef.videoWidth;
+      canvas.height = videoRef.videoHeight;
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(videoRef, 0, 0, canvas.width, canvas.height);
       const imageDataUrl = canvas.toDataURL('image/png');
       processOCR(imageDataUrl);
       setShowCamera(false);
@@ -123,7 +123,7 @@ function TeacherDashboard() {
           </button>
           <Show when={showCamera()}>
             <div class="mt-4">
-              <video ref={videoRef} autoplay class="w-full h-64 bg-black rounded-lg"></video>
+              <video ref={el => videoRef = el} autoplay class="w-full h-64 bg-black rounded-lg"></video>
               <button
                 onClick={captureImage}
                 class="mt-2 w-full px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"

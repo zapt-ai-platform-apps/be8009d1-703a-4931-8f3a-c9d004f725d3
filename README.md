@@ -23,7 +23,7 @@ New App is an educational web application designed to enhance reading fluency an
 ### For Students:
 
 1. **Secure Authentication:**
-   - Sign in using email/password or social providers.
+   - Sign in using email/password or social login providers.
 
 2. **Access Assigned Texts:**
    - View a list of texts uploaded by their teacher.
@@ -116,3 +116,5 @@ The following environment variables are required:
 - The app utilizes responsive design principles to ensure usability across desktops, tablets, and mobile devices.
 - Error logging is integrated using Sentry for both frontend and backend.
 - Ensure that all environment variables are properly set before running the application.
+- The app is free to use and does not require any subscriptions.
+- The application icon is used from an external URL and is included in the HTML head for the favicon.
