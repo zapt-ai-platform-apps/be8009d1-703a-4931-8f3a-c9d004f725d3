@@ -6,6 +6,8 @@ function TeacherDashboard() {
   const [texts, setTexts] = createSignal([]);
   const [newText, setNewText] = createSignal('');
   const [loading, setLoading] = createSignal(false);
+  const [showCamera, setShowCamera] = createSignal(false);
+  const videoRef = {};
   const navigate = useNavigate();
 
   const fetchTexts = async () => {
@@ -27,19 +29,49 @@ function TeacherDashboard() {
   };
 
   const handleUploadText = async () => {
-    // Logic to capture image from camera
-    // Since capturing from camera is typically handled in the frontend,
-    // we'll assume we have a function to get the image blob.
+    setShowCamera(true);
+    startCamera();
+  };
 
-    // Placeholder for image capture logic
-    const imageBlob = await captureImageFromCamera();
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef && videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+    }
+  };
 
+  const stopCamera = () => {
+    if (videoRef && videoRef.current && videoRef.current.srcObject) {
+      let tracks = videoRef.current.srcObject.getTracks();
+      tracks.forEach(track => track.stop());
+    }
+  };
+
+  const captureImage = () => {
+    if (videoRef && videoRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const imageDataUrl = canvas.toDataURL('image/png');
+      processOCR(imageDataUrl);
+      setShowCamera(false);
+      stopCamera();
+    }
+  };
+
+  const processOCR = async (imageDataUrl) => {
     setLoading(true);
     try {
-      const ocrResult = await createEvent('ocr_request', {
-        image: imageBlob
+      const result = await createEvent('ocr_request', {
+        image: imageDataUrl
       });
-      setNewText(ocrResult.text);
+      setNewText(result.text || '');
     } catch (error) {
       console.error('Error during OCR processing:', error);
     } finally {
@@ -67,7 +99,7 @@ function TeacherDashboard() {
   };
 
   return (
-    <div class="h-full p-4">
+    <div class="min-h-screen p-4">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-4xl font-bold text-purple-600">Teacher Dashboard</h1>
         <button
@@ -85,10 +117,27 @@ function TeacherDashboard() {
             class={`w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer ${loading() ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={loading()}
           >
-            <Show when={loading()} fallback="Capture Text from Camera">
-              Processing...
+            <Show when={!showCamera()} fallback="Processing...">
+              Capture Text from Camera
             </Show>
           </button>
+          <Show when={showCamera()}>
+            <div class="mt-4">
+              <video ref={videoRef} autoplay class="w-full h-64 bg-black rounded-lg"></video>
+              <button
+                onClick={captureImage}
+                class="mt-2 w-full px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
+              >
+                Capture and Process
+              </button>
+              <button
+                onClick={() => { setShowCamera(false); stopCamera(); }}
+                class="mt-2 w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </Show>
           <Show when={newText()}>
             <div class="mt-4">
               <textarea

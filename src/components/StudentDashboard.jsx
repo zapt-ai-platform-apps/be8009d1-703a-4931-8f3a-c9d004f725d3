@@ -54,7 +54,7 @@ function StudentDashboard() {
   };
 
   return (
-    <div class="h-full p-4">
+    <div class="min-h-screen p-4">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-4xl font-bold text-purple-600">Student Dashboard</h1>
         <button
@@ -74,7 +74,7 @@ function StudentDashboard() {
                   class="bg-white p-4 rounded-lg shadow-md cursor-pointer hover:bg-purple-100"
                   onClick={() => setSelectedText(text)}
                 >
-                  <p class="text-gray-700">{text.content.slice(0, 50)}...</p>
+                  <p class="text-gray-700">{text.content.slice(0, 100)}...</p>
                 </div>
               )}
             </For>

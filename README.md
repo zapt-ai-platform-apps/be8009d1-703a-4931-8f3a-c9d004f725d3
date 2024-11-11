@@ -46,6 +46,7 @@ New App is an educational web application designed to enhance reading fluency an
 2. **Upload Text:**
    - Click on "Upload Text" in the dashboard.
    - Use the camera to capture an image of the text.
+     - Allow camera permissions if prompted.
    - The app processes the image using OCR.
    - Preview and edit the extracted text.
    - Save the text, making it accessible to assigned students.
@@ -114,3 +115,4 @@ The following environment variables are required:
 
 - The app utilizes responsive design principles to ensure usability across desktops, tablets, and mobile devices.
 - Error logging is integrated using Sentry for both frontend and backend.
+- Ensure that all environment variables are properly set before running the application.
