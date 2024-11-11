@@ -118,3 +118,6 @@ The following environment variables are required:
 - Ensure that all environment variables are properly set before running the application.
 - The app is free to use and does not require any subscriptions.
 - The application icon is used from an external URL and is included in the HTML head for the favicon.
+- **External APIs:**
+  - The app uses external APIs for OCR and Text-to-Speech via the `createEvent` function.
+  - Ensure API keys and permissions are properly configured in the environment variables.

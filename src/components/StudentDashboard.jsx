@@ -54,7 +54,7 @@ function StudentDashboard() {
   };
 
   return (
-    <div class="min-h-screen p-4">
+    <div class="min-h-screen p-4 h-full">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-4xl font-bold text-purple-600">Student Dashboard</h1>
         <button

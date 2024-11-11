@@ -1,4 +1,4 @@
-import { createSignal, onMount, Show } from 'solid-js';
+import { createSignal, onMount, Show, createEffect } from 'solid-js';
 import { supabase } from './supabaseClient';
 import { Auth } from '@supabase/auth-ui-solid';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
@@ -22,6 +22,9 @@ function App() {
 
   onMount(() => {
     checkUserSignedIn();
+  });
+
+  createEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(async (_, session) => {
       if (session?.user) {
         setUser(session.user);
@@ -53,7 +56,7 @@ function App() {
   };
 
   return (
-    <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100">
+    <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 h-full">
       <Routes>
         <Route path="/" component={HomePage} />
         <Route path="/login" element={
